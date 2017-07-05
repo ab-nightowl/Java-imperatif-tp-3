@@ -2,6 +2,8 @@ package fr.pizzeria.console;
 
 import java.util.Scanner;
 
+import javax.net.ssl.SSLContext;
+
 public class PizzeriaAdminConsoleApp {
 
 	public static void main(String[] args) {
@@ -27,34 +29,112 @@ public class PizzeriaAdminConsoleApp {
 				{ "7", "IND", "L'Indienne", "14.00" }
 		};
 		
-		PizzeriaAdminConsoleApp.afficherMenu(menuDeBienvenue);
-		
 		Scanner sc = new Scanner(System.in);
-		String userInput = sc.nextLine();
+		String userInput = "";
 		
-		switch (userInput) {
-			case ("1") : 
-				System.out.println(menuDeBienvenue[1]);
-				PizzeriaAdminConsoleApp.afficherCarte(carteDesPizzas);
-			break;
-			case ("2") : 
-				System.out.println(menuDeBienvenue[2]);
-			break;
-			case ("3") : 
-				System.out.println(menuDeBienvenue[3]);
-			break;
-			case ("4") : 
-				System.out.println(menuDeBienvenue[4]);
-			break;
-			case ("99") : 
-				System.out.println(menuDeBienvenue[5]);
-			break;
-			default :
-				PizzeriaAdminConsoleApp.afficherMenu(menuDeBienvenue);
+		while (!(userInput.equals("99"))) {
+			PizzeriaAdminConsoleApp.afficherMenu(menuDeBienvenue);
+			userInput = sc.nextLine();
+			
+			switch (userInput) {
+				case ("1") : 
+					System.out.println(menuDeBienvenue[1]);
+					PizzeriaAdminConsoleApp.afficherCarte(carteDesPizzas);
+				break;
+				
+				case ("2") : 
+					System.out.println(menuDeBienvenue[2]);
+					
+					System.out.println("Veuillez saisir le code");
+					String code = sc.nextLine();
+					
+					System.out.println("Veuillez saisir le nom (sans espace)");
+					String nomPizza = sc.nextLine();
+					
+					System.out.println("Veuillez saisir le prix");
+					String prix = sc.nextLine();
+					
+					int dernierIndexCarte = Integer.parseInt(carteDesPizzas[carteDesPizzas.length-1][0]);
+					int nouvelIndex = dernierIndexCarte + 1;
+					String nouvelIndexToS = Integer.toString(nouvelIndex);
+					
+					String[] nouvellePizza = { nouvelIndexToS, code, nomPizza, prix };
+					String[][] carteTemporaire = new String [carteDesPizzas.length + 1] [];
+					System.arraycopy(carteDesPizzas, 0, carteTemporaire, 0, carteDesPizzas.length);
+					carteTemporaire[carteTemporaire.length - 1] = nouvellePizza;
+					
+					carteDesPizzas = carteTemporaire;
+					
+				break;
+				
+				case ("3") : 
+					System.out.println(menuDeBienvenue[3]);
+					PizzeriaAdminConsoleApp.afficherCarte(carteDesPizzas);
+					
+					System.out.println("Veuillez choisir le code de la pizza à modifier (en majuscules)");
+					String userChoice = sc.nextLine();
+					
+					boolean trouve = false;
+					
+					for (int i = 0; i < carteDesPizzas.length; i++) {
+						String codeCourant = carteDesPizzas[i][1];
+						
+						if (userChoice.equals(codeCourant)) {
+							trouve = true;
+							
+							System.out.println("Veuillez saisir le code");
+							String codeAJour = sc.nextLine();
+							
+							System.out.println("Veuillez saisir le nom (sans espace)");
+							String nomPizzaAJour = sc.nextLine();
+							
+							System.out.println("Veuillez saisir le prix");
+							String prixAJour = sc.nextLine();
+							
+							carteDesPizzas[i] = new String[] { Integer.toString(i), codeAJour, nomPizzaAJour, prixAJour };
+						}
+					}
+					
+					if (!trouve) {
+						System.out.println("Ce code n'existe pas.");
+						System.out.println("Veuillez choisir le code de la pizza à modifier (en majuscules)");
+					}
+				break;
+				
+				case ("4") : 
+					System.out.println(menuDeBienvenue[4]);
+					
+					PizzeriaAdminConsoleApp.afficherCarte(carteDesPizzas);
+					
+					System.out.println("Veuillez choisir le code de la pizza à modifier (en majuscules)");
+					userChoice = sc.nextLine();
+					
+					trouve = false;
+					
+					for (int i = 0; i < carteDesPizzas.length; i++) {
+						String codeCourant = carteDesPizzas[i][1];
+						
+						if (userChoice.equals(codeCourant)) {
+							trouve = true;
+							
+							carteDesPizzas[i] = new String[] { "", "", "", "" };
+						}
+					}
+					
+					if (!trouve) {
+						System.out.println("Ce code n'existe pas.");
+						System.out.println("Veuillez choisir le code de la pizza à modifier (en majuscules)");
+					}
+				break;
+				
+				case ("99") : 
+					System.out.println(menuDeBienvenue[5]);
+				break;
+				
+				default :
+					PizzeriaAdminConsoleApp.afficherMenu(menuDeBienvenue);
 			}
-		
-		PizzeriaAdminConsoleApp.afficherMenu(menuDeBienvenue);
-		
+		}
 		
 
 	}
@@ -69,6 +149,10 @@ public class PizzeriaAdminConsoleApp {
 		for (String[] l: carteDesPizzas) {
 			System.out.println(l[1] + " -> " + l[2] + " (" + l[3] + ")");
 		}
+	}
+	
+	public static void inviteSaisieValeurs() {
+		// TO DO!
 	}
 
 }
